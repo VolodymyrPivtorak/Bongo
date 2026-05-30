@@ -17,6 +17,9 @@ out
 build
 .gradle
 
+# generated sources
+src/generated
+
 # other
 eclipse
 /run*
