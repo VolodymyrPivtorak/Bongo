@@ -22,9 +22,7 @@ public class JoinCommand implements Command<CommandSourceStack> {
         Bongo bongo = Bongo.get(player.level());
         DyeColor dc = context.getArgument("team", DyeColor.class);
 
-        if (!bongo.active()) {
-            throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.noactive")).create();
-        } else if (bongo.running() || bongo.won()) {
+        if (bongo.running() || bongo.won()) {
             throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.running")).create();
         }
 

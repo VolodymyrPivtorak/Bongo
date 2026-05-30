@@ -213,7 +213,6 @@ public class Team {
         completed = 0;
         locked = 0;
         players.forEach(bongo::updateMentions);
-        players.clear();
         teleportsLeft = 0;
         redeemedEmergency = false;
         clearBackPack(true);

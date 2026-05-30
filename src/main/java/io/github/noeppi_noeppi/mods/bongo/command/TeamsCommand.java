@@ -3,7 +3,6 @@ package io.github.noeppi_noeppi.mods.bongo.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.github.noeppi_noeppi.mods.bongo.Bongo;
 import io.github.noeppi_noeppi.mods.bongo.data.Team;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,10 +18,6 @@ public class TeamsCommand implements Command<CommandSourceStack> {
         Player player = context.getSource().getPlayerOrException();
         Level level = context.getSource().getLevel();
         Bongo bongo = Bongo.get(level);
-
-        if (!bongo.active()) {
-            throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.noactive")).create();
-        }
 
         for (Team team : bongo.getTeams()) {
             if (team.getPlayers().isEmpty())

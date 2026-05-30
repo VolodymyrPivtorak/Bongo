@@ -20,9 +20,7 @@ public class LeaveCommand implements Command<CommandSourceStack> {
         ServerPlayer player = context.getSource().getPlayerOrException();
         Bongo bongo = Bongo.get(player.level());
 
-        if (!bongo.active()) {
-            throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.noactive")).create();
-        } else if (bongo.running() || bongo.won()) {
+        if (bongo.running() || bongo.won()) {
             throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.running")).create();
         }
 

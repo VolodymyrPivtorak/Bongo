@@ -34,9 +34,7 @@ public class SpreadCommand implements Command<CommandSourceStack> {
         //noinspection ConstantConditions
         List<Player> players = new ArrayList<>(level.getServer().getPlayerList().getPlayers());
 
-        if (!bongo.active()) {
-            throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.noactive")).create();
-        } else if (bongo.running() || bongo.won()) {
+        if (bongo.running() || bongo.won()) {
             throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.team.running")).create();
         } else if (teams > players.size()) {
             throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.spread.less", teams)).create();
@@ -47,13 +45,16 @@ public class SpreadCommand implements Command<CommandSourceStack> {
         if (MinecraftForge.EVENT_BUS.post(event)) {
             throw new SimpleCommandExceptionType(event.getFailureMessage()).create();
         } else {
+            for (Team team : bongo.getTeams()) {
+                team.clearPlayers();
+            }
+
             int perTeam = players.size() / teams;
             int teamsWithOneMore = players.size() % teams;
 
             Random random = new Random();
             for (int i = 0; i < teams; i++) {
                 Team team = bongo.getTeam(Util.PREFERRED_COLOR_ORDER.get(i));
-                team.clearPlayers();
                 int playersThisTeam = i < teamsWithOneMore ? perTeam + 1 : perTeam;
                 List<Player> added = new ArrayList<>();
                 for (int j = 0; j < playersThisTeam; j++) {
