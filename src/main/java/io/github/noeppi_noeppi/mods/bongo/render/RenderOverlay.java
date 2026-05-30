@@ -161,7 +161,7 @@ public class RenderOverlay implements IGuiOverlay {
                             graphics.pose().translate(0, 8 / 0.3, 10);
                             graphics.pose().scale(0.8f, 0.8f, 1);
 
-                            renderTextWithBackground(graphics, task.renderDisplayName(mc));
+                            renderTextWithBackground(graphics, mc.font.split(task.renderFullDisplayName(mc), 76));
 
                             graphics.pose().popPose();
                         }
@@ -298,6 +298,38 @@ public class RenderOverlay implements IGuiOverlay {
 
         RenderHelper.resetColor();
         graphics.drawString(Minecraft.getInstance().font, text, -widthHalf, -heightHalf, 0xFFFFFF, false);
+        graphics.pose().popPose();
+    }
+
+    public static void renderTextWithBackground(GuiGraphics graphics, List<FormattedCharSequence> lines) {
+        if (lines.isEmpty()) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        int width = 0;
+        for (FormattedCharSequence line : lines) {
+            width = Math.max(width, mc.font.width(line));
+        }
+        if (width == 0) return;
+
+        int lineHeight = mc.font.lineHeight;
+        int height = (lineHeight * lines.size()) + Math.max(0, lines.size() - 1);
+        float widthHalf = width / 2f;
+        float heightHalf = height / 2f;
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(-(widthHalf + 2), -(heightHalf + 2), 0);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(0.2f, 0.2f, 0.2f, 0.8f);
+        graphics.blit(RenderHelper.TEXTURE_WHITE, 0, 0, 0, 0, width + 4, height + 4, 256, 256);
+        RenderSystem.disableBlend();
+        graphics.pose().translate(widthHalf + 2, heightHalf + 2, 10);
+
+        RenderHelper.resetColor();
+        for (int i = 0; i < lines.size(); i++) {
+            FormattedCharSequence line = lines.get(i);
+            graphics.drawString(mc.font, line, -(mc.font.width(line) / 2f), -heightHalf + (i * (lineHeight + 1)), 0xFFFFFF, false);
+        }
         graphics.pose().popPose();
     }
     

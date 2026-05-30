@@ -116,6 +116,12 @@ public class Task {
         //noinspection unchecked
         return ((TaskType<Object>) this.content.type).renderDisplayName(mc, this.content.element);
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public Component renderFullDisplayName(Minecraft mc) {
+        //noinspection unchecked
+        return ((TaskType<Object>) this.content.type).renderFullDisplayName(mc, this.content.element);
+    }
     
     @OnlyIn(Dist.CLIENT)
     public void renderSlot(Minecraft mc, GuiGraphics graphics) {

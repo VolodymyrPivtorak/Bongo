@@ -38,6 +38,11 @@ public interface TaskType<T> {
     default FormattedCharSequence renderDisplayName(Minecraft mc, T element) {
         return ComponentUtil.subSequence(this.contentName(element, null).getVisualOrderText(), 0, 16);
     }
+
+    @OnlyIn(Dist.CLIENT)
+    default Component renderFullDisplayName(Minecraft mc, T element) {
+        return this.contentName(element, null);
+    }
     
     @OnlyIn(Dist.CLIENT) void renderSlot(Minecraft mc, GuiGraphics graphics);
     @OnlyIn(Dist.CLIENT) void renderSlotContent(Minecraft mc, GuiGraphics graphics, T element, boolean bigBongo);

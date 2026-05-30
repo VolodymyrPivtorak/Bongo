@@ -131,6 +131,19 @@ public class TaskTypeTag implements TaskType<TagWithCount> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
+    public Component renderFullDisplayName(Minecraft mc, TagWithCount element) {
+        ItemStack stack = cycle(element);
+        if (stack == null) {
+            return Component.translatable("bongo.task.tag.empty");
+        } else if (element.getCount() != 1) {
+            return stack.getHoverName().copy().append(Component.literal(" x " + element.getCount()));
+        } else {
+            return stack.getHoverName();
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
     public void renderSlot(Minecraft mc, GuiGraphics graphics) {
         graphics.blit(RenderOverlay.BINGO_SLOTS_TEXTURE, 0, 0, 0, 0, 18, 18, 256, 256);
     }

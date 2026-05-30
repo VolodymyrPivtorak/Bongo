@@ -113,6 +113,16 @@ public class TaskTypeItem implements TaskType<ItemStack> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
+    public Component renderFullDisplayName(Minecraft mc, ItemStack element) {
+        if (element.getCount() != 1) {
+            return element.getHoverName().copy().append(Component.literal(" x " + element.getCount()));
+        } else {
+            return element.getHoverName();
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
     public void renderSlot(Minecraft mc, GuiGraphics graphics) {
         graphics.blit(RenderOverlay.BINGO_SLOTS_TEXTURE, 0, 0, 0, 0, 18, 18, 256, 256);
     }
