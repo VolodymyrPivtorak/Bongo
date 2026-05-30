@@ -101,6 +101,8 @@ public class Bongo extends SavedData {
     private long runningUntil = 0;
     private int taskAmountOutOfTime = -1;
     private DyeColor winningTeam;
+    private ResourceLocation selectedTasksId = null;
+    private List<ResourceLocation> selectedSettingIds = List.of();
 
     public Bongo() {
         level = null;
@@ -265,6 +267,15 @@ public class Bongo extends SavedData {
             compound.putInt("winningTeam", winningTeam.ordinal());
         }
 
+        if (selectedTasksId != null) {
+            compound.putString("selectedTasksId", selectedTasksId.toString());
+        }
+        ListTag selectedSettings = new ListTag();
+        for (ResourceLocation id : selectedSettingIds) {
+            selectedSettings.add(StringTag.valueOf(id.toString()));
+        }
+        compound.put("selectedSettingIds", selectedSettings);
+
         safe(() -> CodecHelper.NBT.write(GameSettings.CODEC, settings)).ifPresent(elem -> compound.put("settings", elem));
 
         for (DyeColor dc : DyeColor.values()) {
@@ -301,6 +312,23 @@ public class Bongo extends SavedData {
             winningTeam = DyeColor.values()[nbt.getInt("winningTeam")];
         } else {
             winningTeam = null;
+        }
+
+        selectedTasksId = null;
+        if (nbt.contains("selectedTasksId", Tag.TAG_STRING)) {
+            selectedTasksId = safe(() -> new ResourceLocation(nbt.getString("selectedTasksId"))).orElse(null);
+        }
+
+        if (nbt.contains("selectedSettingIds", Tag.TAG_LIST)) {
+            List<ResourceLocation> ids = new ArrayList<>();
+            ListTag selectedSettings = nbt.getList("selectedSettingIds", Tag.TAG_STRING);
+            for (int i = 0; i < selectedSettings.size(); i++) {
+                String id = selectedSettings.getString(i);
+                safe(() -> new ResourceLocation(id)).ifPresent(ids::add);
+            }
+            selectedSettingIds = List.copyOf(ids);
+        } else {
+            selectedSettingIds = List.of();
         }
         
         settings = GameSettings.DEFAULT;
@@ -363,11 +391,28 @@ public class Bongo extends SavedData {
         clearItems(true);
         playersInTcMode.clear();
         settings = GameSettings.DEFAULT;
+        selectedTasksId = null;
+        selectedSettingIds = List.of();
         setDirty();
     }
 
     public GameSettings getSettings() {
         return settings == null ? GameSettings.DEFAULT : settings;
+    }
+
+    @Nullable
+    public ResourceLocation selectedTasksId() {
+        return selectedTasksId;
+    }
+
+    public List<ResourceLocation> selectedSettingIds() {
+        return selectedSettingIds;
+    }
+
+    public void setSelectedGameDefinitionIds(ResourceLocation tasksId, List<ResourceLocation> settingIds, boolean suppressBingoSync) {
+        this.selectedTasksId = tasksId;
+        this.selectedSettingIds = List.copyOf(settingIds);
+        setChanged(suppressBingoSync);
     }
 
     public void setSettings(GameSettings settings, boolean suppressBingoSync) {

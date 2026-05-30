@@ -20,6 +20,9 @@ import java.util.NoSuchElementException;
 
 public class CreateCommand implements Command<CommandSourceStack> {
 
+    private static ResourceLocation lastTasksId = null;
+    private static List<ResourceLocation> lastSettingIds = List.of();
+
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel level = context.getSource().getLevel();
@@ -28,9 +31,13 @@ public class CreateCommand implements Command<CommandSourceStack> {
             throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.create.running")).create();
         }
 
-        ResourceLocation tasksId = context.getArgument("tasks", ResourceLocation.class);
+        ResourceLocation tasksId = CommandUtil.getArgumentOrDefault(context, "tasks", ResourceLocation.class, lastTasksId);
         //noinspection unchecked
-        List<ResourceLocation> settingIds = CommandUtil.getArgumentOrDefault(context, "settings", (Class<List<ResourceLocation>>) (Class<?>) List.class, List.of());
+        List<ResourceLocation> settingIds = CommandUtil.getArgumentOrDefault(context, "settings", (Class<List<ResourceLocation>>) (Class<?>) List.class, lastSettingIds);
+
+        if (tasksId == null) {
+            throw new SimpleCommandExceptionType(Component.translatable("bongo.cmd.create.notfound")).create();
+        }
 
         GameTasks tasks = GameTasks.gameTasks().get(tasksId);
         if (tasks == null) {
@@ -55,7 +62,11 @@ public class CreateCommand implements Command<CommandSourceStack> {
         if (err != null) {
             throw new SimpleCommandExceptionType(Component.translatable(err)).create();
         }
+        bongo.setSelectedGameDefinitionIds(tasksId, settingIds, true);
         bongo.activate();
+
+        lastTasksId = tasksId;
+        lastSettingIds = List.copyOf(settingIds);
 
         ServerMessages.broadcast(level, Component.translatable("bongo.info").append(context.getSource().getDisplayName()).append(Component.translatable("bongo.cmd.create.done")));
 

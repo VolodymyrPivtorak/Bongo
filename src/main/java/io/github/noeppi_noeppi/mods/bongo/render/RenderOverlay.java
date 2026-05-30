@@ -190,6 +190,16 @@ public class RenderOverlay implements IGuiOverlay {
                         lines.add(I18n.get("bongo.wc." + bongo.getSettings().game().winCondition().id));
                     }
 
+                    if (bongo.active() && !bongo.running() && !bongo.won()) {
+                        if (bongo.selectedTasksId() != null) {
+                            lines.add(I18n.get("bongo.tasks_id") + bongo.selectedTasksId());
+                        }
+                        String settings = bongo.selectedSettingIds().isEmpty()
+                                ? I18n.get("bongo.default")
+                                : String.join(" ", bongo.selectedSettingIds().stream().map(ResourceLocation::toString).toList());
+                        lines.add(I18n.get("bongo.settings_id") + settings);
+                    }
+
                     if (bongo.getSettings().game().teleportsPerTeam() != 0 && !bongo.won()) {
                         boolean hasRunningTeam = team != null && bongo.running();
                         int tpLeft = hasRunningTeam ? team.teleportsLeft() : bongo.getSettings().game().teleportsPerTeam();
