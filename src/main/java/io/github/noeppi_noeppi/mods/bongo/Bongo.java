@@ -70,7 +70,7 @@ public class Bongo extends SavedData {
             if (ClientConfig.addItemTooltips.get()) {
                 bongo.updateTooltipPredicate();
             }
-            if (ClientConfig.modifyJeiBookamrks.get()) {
+            if (ClientConfig.modifyJeiBookmarks.get()) {
                 if (bongo.running()) {
                     Set<ItemStack> stacks = new HashSet<>();
                     Set<ResourceLocation> advancements = new HashSet<>();
