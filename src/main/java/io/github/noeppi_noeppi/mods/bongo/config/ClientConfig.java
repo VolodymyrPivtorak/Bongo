@@ -16,6 +16,7 @@ public class ClientConfig {
     public static ForgeConfigSpec.ConfigValue<Boolean> bongoMapOnTheRight;
     public static ForgeConfigSpec.ConfigValue<Boolean> addItemTooltips;
     public static ForgeConfigSpec.ConfigValue<Boolean> modifyJeiBookmarks;
+    public static ForgeConfigSpec.ConfigValue<Boolean> showBongoMapWithDebugMenu;
 
     public static void init(ForgeConfigSpec.Builder builder) {
         bongoMapScaleFactor = builder
@@ -33,5 +34,9 @@ public class ClientConfig {
         modifyJeiBookmarks = builder
                 .comment("Whether bongo should put all bingo items in the JEI bookmarks.")
                 .define("modify_jei_bookmarks", true);
+
+        showBongoMapWithDebugMenu = builder
+                .comment("Whether the bongo map should be active when the F3 Debug Menu is active")
+                .define("show_bongo_map_with_debug_menu", false);
     }
 }
